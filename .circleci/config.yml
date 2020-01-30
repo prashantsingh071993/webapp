@@ -3,30 +3,34 @@ version: 2
 jobs:
   pr_check:
     docker:
-      - image: circleci/openjdk:8-jdk
-    steps:
-      - checkout # check out source code to working directory
-      - run:
-          name: Gradle build
-          command: |
-            echo "Hello World!"
+      - image: circleci/node:12.14.1
 
-  build:
-    docker:
-      - image: circleci/openjdk:8-jdk
     steps:
-      - checkout # check out source code to working directory
+    # check out source code to working directory
+      - checkout 
       - run:
-          name: Gradle build
+          name: Code Check out
           command: |
-            echo "Hello World!"
+            echo “Hello!”
+            
+  build_deploy:
+    docker:
+      - image: circleci/node:13.6.0
+    
+    steps:
+    # check out source code to working directory
+      - checkout 
+      - run:
+          name: Build 
+          command: |
+           cd Cloud && npm install
+  
 
 workflows:
   version: 2
   pr-check-workflow:
     jobs:
-    - pr_check
-    
-build-deploy-workflow:
+      - pr_check
+  build-deploy-workflow:
     jobs:
-    - build
+      - build_deploy
