@@ -23,7 +23,7 @@ jobs:
       - run:
           name: Build 
           command: |
-           cd Cloud && npm install
+           cd webapp && npm install
   
 
 workflows:
