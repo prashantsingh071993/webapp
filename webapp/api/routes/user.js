@@ -63,8 +63,8 @@ router.post('/', (req, res, next) => {
 
 
   const  password = req.body.password;
-  const  fName = req.body.fName;
-  const  lName = req.body.lName;
+  const  fName = req.body.first_name;
+  const  lName = req.body.last_name;
   const email = req.body.email;
 
 

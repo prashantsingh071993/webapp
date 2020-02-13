@@ -71,6 +71,26 @@ class DB {
     }
 
 
+    getAddFile(owner_id, bill_id, fileName, url,size, file_id, upload_date, md5hash)
+    {
+        let db = `insert into file(owner_id, bill_id , file_id, file_name, url, upload_date, size, md5hash) VALUES('${owner_id}', '${bill_id}','${file_id}','${fileName}','${url}', '${upload_date}' ,'${size}','${md5hash}')`;
+        return db;
+    }
+
+    getFileById(owner_id, bill_id)
+    {
+        let db = `select * from file where owner_id ='${owner_id}' && bill_id='${bill_id}'`;
+        return db;
+    }
+
+    deleteFileById(owner_id, bill_id, file_id)
+    {
+        let db = `delete from file where owner_id ='${owner_id}' && bill_id='${bill_id}' && file_id = '${file_id}'`;
+        return db;
+    }
+
+
+
 
 
 

@@ -17,9 +17,14 @@ const connection = require('./api/connection/connection');
 
 
 app.use(morgan("dev"));
-app.use('/uploads', express.static('uploads'));
+//app.use('/uploads', express.static('uploads'));
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
+
+
+app.use(express.static('./public'));
+
+
 
 app.use((req, res, next) => {
   res.header("Access-Control-Allow-Origin", "*");
