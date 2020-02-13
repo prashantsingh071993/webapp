@@ -27,6 +27,15 @@ pool.getConnection((err, connection) => {
                 console.log('User table has been created');
         });
 
+        connection.query('create table if not exists file(owner_id varchar(200), size varchar(200), md5hash varchar(200), bill_id varchar(200), file_id varchar(200) , upload_date varchar(200), file_name varchar(200), url varchar(200) )', (error, data) => {
+            if (error){
+                throw error;
+                console.log(error);
+            }
+            else
+                console.log('File Table has been created');
+        });
+
 
         connection.query('create table if not exists bill(id varchar(100), created_ts varchar(100), updated_ts varchar(100), owner_id varchar(100), vendor varchar(100), bill_date varchar(100), due_date varchar(100), amount_due DOUBLE, categories varchar(100), paymentStatus varchar(100))', (error, data) => {
             if (error){

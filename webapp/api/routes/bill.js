@@ -3,6 +3,11 @@ const router = express.Router();
 const bcrypt = require("bcrypt");
 const Regex = require("regex");
 const uuidv4 = require('uuid/v4');
+const multer = require('multer');
+const path = require('path');
+const fs = require('fs');
+var md5 = require('md5');
+
 
 const connection =  require('../connection/connection');
 const Queries = require('../classes/db');
@@ -12,6 +17,41 @@ const auth = require('../classes/auth');
 
 const database = new Queries();
 const validator = new Validator();
+
+// Setting up the storage engine
+const storage = multer.diskStorage({
+    destination: './public/uploads',
+    filename: function(req, file, cb){
+      cb(null,Date.now() + path.extname(file.originalname));
+    }
+  });
+
+ 
+const upload = multer({
+    storage: storage,
+    fileFilter: function(req, file, cb){
+      checkFileType(file, cb);
+    }
+  }).single('file');
+
+
+function checkFileType(file, cb){
+    // Allowed ext
+    const filetypes = /jpeg|jpg|png|pdf|gif/;
+
+    // Check ext
+    const extname = filetypes.test(path.extname(file.originalname).toLowerCase());
+    // Check mime
+    const mimetype = filetypes.test(file.mimetype);
+  
+    if(mimetype && extname){
+      return cb(null,true);
+    } else {
+      cb('message: This format is not correct, Please choose appropriate format!');
+    }
+  }
+
+
 
 
 // get all the bills
@@ -56,8 +96,59 @@ router.get('/bill/:billId', auth.checkAccess, (req,res,next) => {
 
 });
 
+// GET FILE 
 
 
+router.get('/bill/:bill_id/file/:fileId', auth.checkAccess,(req, res) => {
+
+    const owner_id = req.ownerId;
+    const bill_id = req.params.bill_id; 
+
+    connection.query(database.getABill(owner_id, bill_id), function (err, result, fields) {
+        if (err) {
+            res.status(404).json({
+                message:' No Bill is found, Please choose a Bill' 
+                })
+                throw err;
+        } else {
+            if (result[0] == null)
+            {
+                res.status(404).json({
+                message:'No Bill is found, Please choose a Bill' 
+                })
+            }
+            else{
+                connection.query(database.getFileById(owner_id, bill_id), function (err, result, fields) {
+                    if (err) {
+                        res.status(404).json(err);
+                        throw err;
+                    } else {
+                        if (result[0] != null)
+                        {
+                            res.status(200).json({
+                                file_name: result[0].file_name,
+                                id: result[0].file_id,
+                                url: result[0].url,
+                                upload_date: result[0].upload_date
+                                
+                        })
+                          return
+                        }
+                    res.status(404).json({
+                        message: "File not found, please check the id" 
+                    });
+                    }
+                });
+            }
+        }
+        });
+  });
+
+
+
+
+
+// POST BILL
 
 
 router.post('/bill',auth.checkAccess, (req, res, next) => {
@@ -101,6 +192,94 @@ router.post('/bill',auth.checkAccess, (req, res, next) => {
   });
 
 
+
+
+
+  // POST FILE
+
+  router.post('/bill/:bill_id/file', auth.checkAccess,(req, res) => {
+
+    const ownerId = req.ownerId;
+    const bill_id = req.params.bill_id; 
+
+    connection.query(database.getABill(ownerId, bill_id), function (err, result, fields) {
+        if (err) {
+            res.status(404).json({
+                message:' No Bill is found, Please choose a Bill' 
+                })
+                throw err;
+        } else {
+            if (result[0] == null)
+            {
+                res.status(404).json({
+                message:' No Bill is found, Please choose a Bill' 
+                })
+            }
+            else{
+                connection.query(database.getFileById(ownerId, bill_id), function (err, result, fields) {
+                    if (err) {
+                        res.status(400).json(err);
+                        throw err;
+                    } else {
+                        if (result[0] == null) 
+                        {
+                            upload(req, res, (err) => {
+                                if(err){
+                                 res.status(400).json({
+                                  message: err
+                                  })
+                                } else {
+                          
+                                  if(req.file == undefined){
+                                      res.status(400).json({
+                                          message: 'Please select a file' 
+                                      })
+                                  } else {
+                                                  const date = new Date();
+                                                  const file_id = uuidv4();
+
+                                               fs.readFile('./'+req.file.path, function(err, buf) {
+                                                   
+                                                connection.query(database.getAddFile(ownerId,bill_id,req.file.filename,req.file.path,req.file.size,file_id,date,md5(buf)), function (err, result, fields) {
+                                                        if (err) {
+                                                            res.status(400).json(err);
+                                                            throw err;
+                                                        } else {
+                                                            if (result.affectedRows > 0)
+                                                            {
+                                                                res.status(201).json({
+                                                                    file_name: req.file.filename,
+                                                                    id: file_id,
+                                                                    url: req.file.path,
+                                                                    upload_date: date
+                                                                })
+                                                            }
+                                                            else{
+                                                            res.status(400).json({
+                                                                message: 'Bad Request'  
+                                                            })
+                                                        }
+                                                        }
+                                                    });   
+                                              });
+                                  }
+                                }
+                              });
+                        }
+
+                        // Image already exists in the system
+                        else{
+                            res.status(400).json({
+                                message: "A File already exists in the system", 
+                                id: result[0].file_id,
+                        })
+                    }
+                    }
+                });
+            }
+        }
+    });
+  });
 
 
 
@@ -168,6 +347,70 @@ router.delete('/bill/:billID', auth.checkAccess, (req,res,next) => {
 
 
 
+    // DELETE THE FILE BY BILL ID
+    
+    router.delete('/bill/:bill_id/file/:fileId', auth.checkAccess,(req, res) => {
 
+        const owner_id = req.ownerId;
+        const bill_id = req.params.bill_id; 
+    
+        connection.query(database.getABill(owner_id, bill_id), function (err, result, fields) {
+            if (err) {
+                res.status(404).json({
+                    message:'No Bill is found, Please choose a Bill' 
+                    })
+                    throw err;
+            } else {
+                if (result[0] == null)
+                {
+                    res.status(404).json({
+                    message:'No Bill is found, Please choose a Bill' 
+                    })
+                }
+                else{
+                    const fileId = req.params.fileId; 
+                    connection.query(database.getFileById(owner_id, bill_id), function (err, result, fields) {
+                        if (err) {
+                            res.status(404).json(err);
+                            throw err;
+                        } else {
+                            if (result[0] == null)
+                            {
+                                res.status(404).json({
+                                    message: "File Not Found in the database" 
+                                });
+                            }
+                            else{
+                                const url = result[0].url;
+                                connection.query(database.deleteFileById(owner_id, bill_id,fileId), function (err, result, fields) {
+                                    if (err) {
+                                        res.status(404).json("File not Found in the database"); 
+                                        throw err;
+                                    } else {
+                                        
+                                        if (result.affectedRows > 0)
+                                        {
+                                            fs.unlinkSync('./'+url);
+                                            res.status(200).json({
+                                                message:" File has been deleted successfully"
+                                        })
+                                            return
+                                        }
+                                        res.status(404).json({
+                                            message: "File Not Found "  
+                                    })
+                                       
+                                    }
+                                });
+                        }
+                        }
+                    });
+    
+                }
+            }
+            });
+      });
+
+    
 module.exports = router;
 
