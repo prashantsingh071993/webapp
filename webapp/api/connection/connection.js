@@ -1,16 +1,28 @@
 const util = require('util');
 const mysql = require('mysql');
 const uuidv4 = require('uuid/v4');
+let connection
 
-
-const pool = mysql.createPool({
-    connnectionLimit: 10,
-    host: 'localhost',
-    user: 'root',
-    password: 'root',
-    database: 'cloud6225'
-    
+connection = mysql.createConnection({
+    host: process.env.RDS_HOSTNAME,
+    user: process.env.RDS_USERNAME,
+    password: process.env.RDS_PASSWORD,
+    database: 'csye6225'
 });
+
+
+
+
+
+
+// const pool = mysql.createPool({
+//     connnectionLimit: 10,
+//     host: 'localhost',
+//     user: 'root',
+//     password: 'root',
+//     database: 'cloud6225'
+    
+// });
 
 
 
