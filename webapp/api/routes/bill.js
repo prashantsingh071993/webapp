@@ -7,8 +7,8 @@ const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
 var md5 = require('md5');
-
-
+const aws = require('aws-sdk');
+const multerS3 = require('multer-s3');
 const connection =  require('../connection/connection');
 const Queries = require('../classes/db');
 const Validator = require('../classes/validator');
@@ -17,6 +17,28 @@ const auth = require('../classes/auth');
 
 const database = new Queries();
 const validator = new Validator();
+
+
+let s3 = new aws.S3();
+aws.config.update({region: 'us-east-2'});
+const bucket = process.env.S3_BUCKET_ADDR;
+let upload;
+
+upload = multer({
+    storage: multerS3({
+        s3: s3,
+        bucket: bucket,
+        acl: 'private',
+        contentType: multerS3.AUTO_CONTENT_TYPE,
+        key: (req, file, cb) => {
+            cb(null, Date.now() + path.extname(file.originalname));
+    }
+}),
+fileFilter: function (req, file, cb) {
+    checkFileType(file, cb);
+}
+}).single('file');
+
 
 // Setting up the storage engine
 const storage = multer.diskStorage({
@@ -27,14 +49,6 @@ const storage = multer.diskStorage({
   });
 
  
-const upload = multer({
-    storage: storage,
-    fileFilter: function(req, file, cb){
-      checkFileType(file, cb);
-    }
-  }).single('file');
-
-
 function checkFileType(file, cb){
     // Allowed ext
     const filetypes = /jpeg|jpg|png|pdf|gif/;
@@ -51,7 +65,7 @@ function checkFileType(file, cb){
     }
   }
 
-
+//post method to upload file
 
 
 // get all the bills
@@ -209,7 +223,7 @@ router.post('/bill',auth.checkAccess, (req, res, next) => {
                 })
                 throw err;
         } else {
-            if (result[0] == null)
+            if ( result[0] == null)
             {
                 res.status(404).json({
                 message:' No Bill is found, Please choose a Bill' 
