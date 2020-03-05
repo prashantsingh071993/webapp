@@ -36,4 +36,7 @@ jobs:
             ls -al
             mv  /home/circleci/project/webapp /home/circleci/project/codedeploy_artifact 
             ls -al
+            cd codedeploy_artifact
+            pwd
+            ls -al
             
