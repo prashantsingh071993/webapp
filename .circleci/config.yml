@@ -42,5 +42,7 @@ jobs:
             cd codedeploy_artifact
             pwd
             ls -al
-
-
+            cd ..
+            pwd
+            ls -al
+            echo $S3_BUCKET_ADDR
