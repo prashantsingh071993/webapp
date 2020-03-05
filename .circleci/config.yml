@@ -42,4 +42,7 @@ jobs:
             zip -r csye6225-web-app-${CIRCLE_BUILD_NUM}.zip webapp
             ls -al
             pwd
+            cd ..
+            ls -al
+
             
