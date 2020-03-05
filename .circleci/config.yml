@@ -1,30 +1,21 @@
----
+# Python CircleCI 2.0 configuration file
+#
+# Check https://circleci.com/docs/2.0/language-python/ for more details
+#
 version: 2
 jobs:
-  pr_check:
+  build:
+
     docker:
-      - image: circleci/node:12.14.1
-      - image: circleci/python:3.6-jessie	
+      # specify the version you desire here
+      # use `-browsers` prefix for selenium tests, e.g. `3.6.1-browsers`
+      - image: circleci/python:3.6-jessie
+      # CircleCI maintains a library of pre-built images
+     
 
     steps:
-    # check out source code to working directory
-      - checkout 
-      - run:
-          name: Code Check out
-          command: |
-            echo “Hello!”
-            
-  build_deploy:
-    docker:
-      - image: circleci/node:13.6.0
-    
-    steps:
-    # check out source code to working directory
-      - checkout 
-      - run:
-          name: Build 
-          command: |
-           cd webapp && npm install
+      - checkout
+
 
       - run:
           name: install dependencies
@@ -37,7 +28,7 @@ jobs:
           command: sudo pip install awscli
       
       - run: 
-          name: artifact
+          name: artifacts
           command: |
             echo "Your build number is ${CIRCLE_BUILD_NUM}"
             pwd
@@ -45,13 +36,4 @@ jobs:
             pwd
             cp -r /home/circleci/project/* /home/circleci/project/codedeploy_artifact
             ls -al
-  
-
-workflows:
-  version: 2
-  pr-check-workflow:
-    jobs:
-      - pr_check
-  build-deploy-workflow:
-    jobs:
-      - build_deploy
+            
