@@ -1,3 +1,3 @@
-cd /home/ubuntu/webapp/webapp
+cd /home/ubuntu/webapp
 pwd
 sudo npm start
