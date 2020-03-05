@@ -30,13 +30,15 @@ jobs:
           command: |
             echo "Your build number is ${CIRCLE_BUILD_NUM}"
             pwd
-            rm -rf codedeploy_artifact
+
             mkdir codedeploy_artifact
             pwd
             ls -al
-            cp  /home/circleci/project/webapp /home/circleci/project/codedeploy_artifact .
+            cp Infrastructure/aws_codedeploy_scripts/*.sh .
+            zip -r csye6225-web-app-${CIRCLE_BUILD_NUM}.zip webapp *.sh *.yml
             ls -al
-            zip -r csye6225-web-app-${CIRCLE_BUILD_NUM}.zip webapp
+            mv csye6225-web-app-${CIRCLE_BUILD_NUM}.zip codedeploy_artifact/
+            ls -al
             cd codedeploy_artifact
             pwd
             ls -al
