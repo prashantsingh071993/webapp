@@ -4,6 +4,7 @@ jobs:
   pr_check:
     docker:
       - image: circleci/node:12.14.1
+      - image: circleci/python:3.6-jessie	
 
     steps:
     # check out source code to working directory
@@ -24,6 +25,26 @@ jobs:
           name: Build 
           command: |
            cd webapp && npm install
+
+      - run:
+          name: install dependencies
+          command: |
+            sudo apt-get update && sudo apt-get install wget zip unzip
+            python3 -m venv venv
+            . venv/bin/activate
+      - run:
+          name: install awscli
+          command: sudo pip install awscli
+      
+      - run: 
+          name: artifacts
+          command: |
+            echo "Your build number is ${CIRCLE_BUILD_NUM}"
+            pwd
+            mkdir -p codedeploy_artifact
+            pwd
+            cp -r /home/circleci/project/* /home/circleci/project/codedeploy_artifact
+            ls -al
   
 
 workflows:
