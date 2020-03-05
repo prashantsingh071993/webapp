@@ -34,6 +34,6 @@ jobs:
             mkdir codedeploy_artifact
             pwd
             ls -al
-            mv  /home/circleci/project/webapp /codedeploy_artifact .
+            mv  /home/circleci/project/webapp /home/circleci/project/codedeploy_artifact 
             ls -al
             
