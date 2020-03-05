@@ -1,2 +1,2 @@
 cd home/ubuntu/webapp/webapp
-rm -rf node_modules
+sudo rm -rf node_modules
