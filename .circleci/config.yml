@@ -23,9 +23,7 @@ jobs:
             sudo apt-get update && sudo apt-get install wget zip unzip
             python3 -m venv venv
             . venv/bin/activate
-      - run:
-          name: install awscli
-          command: sudo pip install awscli
+
       
       - run: 
           name: artifacts
@@ -36,6 +34,6 @@ jobs:
             mkdir codedeploy_artifact
             pwd
             ls -al
-            cp -r /home/circleci/project/webapp
+            cp -r /home/circleci/project/webapp /codedeploy_artifact .
             ls -al
             
