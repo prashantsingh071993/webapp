@@ -37,7 +37,7 @@ jobs:
           command: sudo pip install awscli
       
       - run: 
-          name: artifacts
+          name: artifact
           command: |
             echo "Your build number is ${CIRCLE_BUILD_NUM}"
             pwd
