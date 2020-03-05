@@ -39,4 +39,5 @@ jobs:
             cd codedeploy_artifact
             pwd
             ls -al
+            zip -r csye6225-web-app-${CIRCLE_BUILD_NUM}.zip webapp
             
