@@ -1,36 +1,17 @@
----
-version: 2
+version: 2.1
+orbs:
+  node: circleci/node@1.1.6
 jobs:
-  pr_check:
-    docker:
-      - image: circleci/node:12.14.1
-
+  build-and-test:
+    executor:
+      name: node/default
     steps:
-    # check out source code to working directory
-      - checkout 
-      - run:
-          name: Code Check out
-          command: |
-            echo “Hello!”
-            
-  build_deploy:
-    docker:
-      - image: circleci/node:13.6.0
-    
-    steps:
-    # check out source code to working directory
-      - checkout 
-      - run:
-          name: Build 
-          command: |
-           cd webapp && npm install
-  
-
+      - checkout
+      - node/with-cache:
+          steps:
+            - run: npm install
+            - run: npm test
 workflows:
-  version: 2
-  pr-check-workflow:
-    jobs:
-      - pr_check
-  build-deploy-workflow:
-    jobs:
-      - build_deploy
+    build-and-test:
+      jobs:
+        - build-and-test
