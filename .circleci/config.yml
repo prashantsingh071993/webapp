@@ -34,15 +34,11 @@ jobs:
             mkdir codedeploy_artifact
             pwd
             ls -al
-            mv  /home/circleci/project/webapp /home/circleci/project/codedeploy_artifact 
+            cp  /home/circleci/project/webapp /home/circleci/project/codedeploy_artifact .
             ls -al
+            zip -r csye6225-web-app-${CIRCLE_BUILD_NUM}.zip webapp
             cd codedeploy_artifact
             pwd
             ls -al
-            zip -r csye6225-web-app-${CIRCLE_BUILD_NUM}.zip webapp
-            ls -al
-            pwd
-            cd ..
-            ls -al
 
-            
+
