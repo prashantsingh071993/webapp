@@ -55,6 +55,7 @@ jobs:
       - run:
           name: upload artifact Zip to S3
           command: |
+            aws configure list
             aws s3 cp codedeploy_artifact/csye6225-web-app-${CIRCLE_BUILD_NUM}.zip s3://codedeploy.singhprasha.me/deployments/csye6225-web-app-${CIRCLE_BUILD_NUM}.zip
 
             
