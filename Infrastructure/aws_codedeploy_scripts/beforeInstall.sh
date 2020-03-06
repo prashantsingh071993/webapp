@@ -1,2 +1,2 @@
-cd home/ubuntu/webapp
-sudo rm -rf node_modules
+cd /home/ubuntu/webapp
+sudo npm install --save bcrypt
