@@ -62,4 +62,4 @@ jobs:
           name: Make CodeDeploy API call
           command: |
             aws deploy register-application-revision --application-name csye6225-webapp --s3-location bucket=codedeploy.singhprasha.me,bundleType=zip,key=deployments/csye6225-web-app-${CIRCLE_BUILD_NUM}.zip  --region us-east-1
-            aws deploy create-deployment --application-name csye-webapp --deployment-config-name CodeDeployDefault.AllAtOnce --deployment-group-name csye6225-webapp-deployment --s3-location bucket=codedeploy.singhprasha.me,bundleType=zip,key=deployments/csye6225-web-app-${CIRCLE_BUILD_NUM}.zip --region us-east-1
+            aws deploy create-deployment --application-name csye6225-webapp --deployment-config-name CodeDeployDefault.AllAtOnce --deployment-group-name csye6225-webapp-deployment --s3-location bucket=codedeploy.singhprasha.me,bundleType=zip,key=deployments/csye6225-web-app-${CIRCLE_BUILD_NUM}.zip --region us-east-1
