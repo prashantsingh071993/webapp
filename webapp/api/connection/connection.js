@@ -26,7 +26,7 @@ connection = mysql.createConnection({
 
 
 
-pool.getConnection((err, connection) => {
+connection.connect(function (err) {
 
     if(err)
         console.error("something went wrong");
@@ -66,6 +66,6 @@ pool.getConnection((err, connection) => {
 
 
 
-pool.query = util.promisify(pool.query);
 
-module.exports = pool;
+
+module.exports = connection;
