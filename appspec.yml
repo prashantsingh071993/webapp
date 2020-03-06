@@ -3,7 +3,7 @@ os: linux
 
 
 files:
-  - source: /
+  - source: ./
     destination: /home/ubuntu
 
 
@@ -25,13 +25,29 @@ permissions:
 
 hooks:
 
+
+
+
   BeforeInstall:
     - location: ./beforeInstall.sh
       timeout: 300
       runas: ubuntu
 
 
+  ApplcationStop:
+    - location: ./applicationStop.sh
+      timeout: 180
+
+
   AfterInstall:
     - location: ./afterInstall.sh
       timeout: 300
+
+
+  ApplicationStart:
+    - location: ./applicationStart.sh
+      timeout: 180
+
+
+
 
