@@ -1,4 +1,4 @@
 cd /home/ubuntu/webapp
 pwd
-pm2 start app.js
-pm2 monit
+sudo pm2 start app.js
+sudo pm2 monit
