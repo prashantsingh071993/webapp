@@ -1,4 +1,4 @@
-const BUCKET_NAME = process.env.S3_BUCKET_NAME;
+const BUCKET_NAME = process.env.S3_BUCKET_ADDR;
 // const BUCKET_NAME = "codedeploy.singhprasha.me"; //local
 
 var AWS = require('aws-sdk');
