@@ -1,4 +1,4 @@
-# webapp
+# webapps
 repo descrp: Cloud 6225 Network Structures
 
 ## Technology Stack
