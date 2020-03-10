@@ -2,7 +2,7 @@
 cd /home/ubuntu
 sudo mv webapp /home/ubuntu/running_webapp
 sudo mv /home/ubuntu/running_webapp /var/
-sudo mv webapp /running_webapp/
+mv /var/webapp /var/running_webapp/
 cd /var
 cd running_webapp
 ls -al
