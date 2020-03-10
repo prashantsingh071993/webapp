@@ -1,3 +1,3 @@
 #!/bin/sh
-cd /home/ubuntu/webapp
+cd /home/ubuntu/running_webapp/webapp
 sudo rm -rf node_modules
