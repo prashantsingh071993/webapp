@@ -7,5 +7,5 @@ pwd
 cd /home/ubuntu/latest_app/webapp
 pwd
 npm install
-npm start
+
 

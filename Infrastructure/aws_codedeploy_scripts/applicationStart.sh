@@ -1,3 +1,3 @@
 #!/bin/sh
-cd /home/ubuntu/
+cd /home/ubuntu/latest_app/webapp
 pwd
