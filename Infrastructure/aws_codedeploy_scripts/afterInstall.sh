@@ -1,7 +1,6 @@
 #!/bin/sh
 cd /home/ubuntu
-
-# This is after install and my location is
-
 pwd
+mkdir latest_app
+
 
