@@ -1,6 +1,6 @@
 #!/bin/sh
 cd /home/ubuntu
 pwd
-rm -rf webapp
-rm -rf running_webapp
-mkdir running_webapp
+sudo rm -rf webapp
+sudo rm -rf running_webapp
+sudo mkdir running_webapp
