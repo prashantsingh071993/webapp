@@ -1,5 +1,5 @@
 #!/bin/sh
-cd /home/ubuntu
+cd /var/
 pwd
 sudo rm -rf webapp
 sudo rm -rf running_webapp
