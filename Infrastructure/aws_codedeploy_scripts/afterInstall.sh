@@ -2,7 +2,6 @@
 cd /home/ubuntu
 sudo mv webapp /home/ubuntu/running_webapp
 cd running_webapp
-sudo chmod 600 webapp
 ls -al
 cd webapp
 sudo npm install
