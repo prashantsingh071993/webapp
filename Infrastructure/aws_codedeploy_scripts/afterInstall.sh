@@ -1,10 +1,5 @@
 #!/bin/sh
-cd /var
-sudo mv webapp /var/running_webapp/ 
-cd running_webapp/webapp
+cd /home/ubuntu/webapp
+sudo npm install --save bcrypt
 sudo npm install
-sudo npm install --save bcrypt-nodejs && sudo npm uninstall --save bcrypt
-sudo npm install
-
-
 

@@ -1,4 +1,4 @@
 #!/bin/sh
-cd /var/running_webapp/webapp
+cd /home/ubuntu/webapp
 pwd
 sudo npm start
