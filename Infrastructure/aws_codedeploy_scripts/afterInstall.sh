@@ -1,6 +1,6 @@
 #!/bin/sh
 cd /home/ubuntu
-mv webapp /home/ubuntu/running_webapp
+sudo mv webapp /home/ubuntu/running_webapp
 cd running_webapp
 chmod 777 webapp
 ls -al
