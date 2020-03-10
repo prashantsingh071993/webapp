@@ -3,7 +3,7 @@ const validator = require('../validator');
 const uuidv4 = require('uuidv4');
 const uploadS3 = require('../uploadS3');
 module.exports = function(app) {
-  const { Bill, User, File } = require('../db');
+const { Bill, User, File } = require('../db');
 
   app.post('/v1/bill', async (req, res) => {
     try {
