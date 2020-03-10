@@ -82,11 +82,6 @@ module.exports = function(app) {
                 {where: {id: bid}}
             );
 
-            await fs.unlink(
-                `${__dirname}/../uploads/${bid}-${req.files.attachment.name}`,() => {
-                    console.log("File deleted");}
-            );
-
             await bill.setFile(attachment_metadata);
             res.status(201).send(fileUpload);
 
