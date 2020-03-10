@@ -1,7 +1,7 @@
 #!/bin/sh
 cd /var
-mv webapp /var/running_webapp/ 
+sudo mv webapp /var/running_webapp/ 
 cd running_webapp/webapp
-npm install
+sudo npm install
 
 
