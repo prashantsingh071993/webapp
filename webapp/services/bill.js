@@ -54,7 +54,7 @@ const { Bill, User, File } = require('../db');
         where: {id: id}
       });
       if (bills === undefined || bills.length == 0) {
-        throw new Error('Bill ID is incorrect');
+        throw new Error('Bill ID is not correct');
       }
       bill = bills[0];
       const file = await File.findOne({
@@ -65,10 +65,6 @@ const { Bill, User, File } = require('../db');
       const file_attachment  = {
         attachment : file
       };
-      //  await Bill.update(
-      //     {attachment : file},
-      //     {where: {id: id}}
-      // );
 
       bill_update = bill.dataValues;
       ba = { ...bill_update, ...file_attachment };
@@ -86,7 +82,7 @@ const { Bill, User, File } = require('../db');
         where: { id: id }
       });
       if (bills === undefined || bills.length == 0) {
-        throw new Error('Bill ID is incorrect');
+        throw new Error('Bill ID is not correct');
       }
       const bill = bills[0];
 
@@ -94,7 +90,7 @@ const { Bill, User, File } = require('../db');
         where: {BillId: id }
       });
       if (attachments.length === 0) {
-        throw new Error('Invalid Attachment Id');
+        throw new Error('Invalid file Id');
       }
 
       await user.removeBill(bill);
@@ -120,7 +116,7 @@ const { Bill, User, File } = require('../db');
         where: { id: id }
       });
       if (bills === undefined || bills.length == 0) {
-        throw new Error('Bill ID is incorrect');
+        throw new Error('Bill ID is not correct');
       }
       const bill = bills[0];
 
@@ -146,7 +142,7 @@ const { Bill, User, File } = require('../db');
         bill.categories = req.body.categories;
       }
       if (req.body.attachment){
-        throw new Error("Cannot update attachment");
+        throw new Error("Cannot update file");
       }
 
       await bill.save();

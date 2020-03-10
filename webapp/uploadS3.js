@@ -15,12 +15,8 @@ var fs = require('fs');
 var path = require('path');
 
  function uploadToS3(keyPrefix, filePath) {
-    // ex: /path/to/my-picture.png becomes my-picture.png
     var fileName = path.basename(filePath);
     var fileStream = fs.createReadStream(filePath);
-
-    // If you want to save to "my-bucket/{prefix}/{filename}"
-    //                    ex: "my-bucket/my-pictures-folder/my-picture.png"
     var keyName = path.join(keyPrefix, fileName);
 
     return new Promise(function(resolve, reject) {
@@ -50,20 +46,20 @@ async function deleteFromS3(filename) {
 
     const params = {
         Bucket: BUCKET_NAME,
-        Key: filename //if any sub folder-> path/of/the/folder.ext
+        Key: filename 
     };
     try {
         await s3.headObject(params).promise();
-        console.log("File Found in S3");
+        console.log("File Found in the Bucket");
         try {
             await s3.deleteObject(params).promise();
-            console.log("file deleted Successfully");
+            console.log("file has been deleted Successfully");
         }
         catch (err) {
-            console.log("ERROR in file Deleting : " + JSON.stringify(err));
+            console.log("ERROR in Deleting the file : " + JSON.stringify(err));
         }
     } catch (err) {
-        console.log("File not Found ERROR : " + err.code);
+        console.log("File not Found : " + err.code);
     }
 };
 

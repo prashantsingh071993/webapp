@@ -15,7 +15,7 @@ module.exports = function(app) {
             let user = await validator.validateAndGetUser(req, User);
             if (
                 !req.files || Object.keys(req.files).length === 0 || !req.files.attachment) {
-                throw new Error('file is not uploaded.');
+                throw new Error('file not uploaded.');
             }
             let bills = await user.getBills({
                 where: { id: bid }
@@ -43,9 +43,9 @@ module.exports = function(app) {
                 throw new Error("Incorrect file type" + ext1);
             }
 
-            // await req.files.attachment.mv(
-            //     `${__dirname}/../uploads/${bid}-${req.files.attachment.name}`
-            // );
+            await req.files.attachment.mv(
+                `${__dirname}/../uploads/${bid}-${req.files.attachment.name}`
+            );
 
             const aws_metadata = await uploadS3.upload('uploads',
                 `${__dirname}/../uploads/${bid}-${req.files.attachment.name}`
@@ -70,12 +70,6 @@ module.exports = function(app) {
             });
 
 
-            // await fs.unlink(
-            //     `${__dirname}/../uploads/${bid}-${req.files.attachment.name}`,() => {
-            //         console.log("File deleted");}
-            // );
-
-
             const fileUpload = {
                 id: uuid,
                 file_name: req.files.attachment.name,
@@ -88,7 +82,10 @@ module.exports = function(app) {
                 {where: {id: bid}}
             );
 
-
+            await fs.unlink(
+                `${__dirname}/../uploads/${bid}-${req.files.attachment.name}`,() => {
+                    console.log("File deleted");}
+            );
 
             await bill.setFile(attachment_metadata);
             res.status(201).send(fileUpload);
