@@ -4,7 +4,7 @@ os: linux
 
 files:
   - source: ./
-    destination: /var
+    destination: /var/
 
   
 
@@ -30,18 +30,18 @@ hooks:
   BeforeInstall:
     - location: ./beforeInstall.sh
       timeout: 300
-      runas: ubuntu
+      runas: root
 
   AfterInstall:
     - location: ./afterInstall.sh
       timeout: 300
-      runas: ubuntu
+      runas: root
 
 
   ApplicationStart:
     - location: ./applicationStart.sh
       timeout: 300
-      runas: ubuntu
+      runas: root
 
 
 
