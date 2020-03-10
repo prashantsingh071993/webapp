@@ -1,3 +1,6 @@
 #!/bin/sh
-cd /home/ubuntu/webapp
-sudo rm -rf node_modules
+cd /home/ubuntu
+pwd
+rm -rf webapp
+rm -rf running_webapp
+mkdir running_webapp
