@@ -23,24 +23,23 @@ module.exports = function(app) {
 
             bill = bills[0];
             if (bill.length == 0) {
-                throw new Error('Invalid Bill Id');
+                throw new Error('Bill Id is not valid');
             }
             const attachments = await File.findAll({
                 where: {BillId: bid}
             });
 
             if( attachments.length !=0) {
-                throw  new Error("BillId already exists");
+                throw  new Error("BillId already exists in the database");
             }
 
             let ext1 = mime.getExtension(req.files.attachment.mimetype);
-            // const a = req.files.at;tachment.mimetype;
-            // console.log(a);
+           
             ext1 = ext1.toString().toLowerCase();
             console.log(ext1);
             const types = new Set(["pdf","jpeg","jpg","png"]);
             if (!types.has(ext1)) {
-                throw new Error("Incorrect file type" + ext1);
+                throw new Error("Please type not correct" + ext1);
             }
 
             await req.files.attachment.mv(
@@ -109,17 +108,17 @@ module.exports = function(app) {
                 });
 
                 if (bills.length === 0) {
-                    throw new Error('Invalid Bill Id');
+                    throw new Error('Bill Id is not valid');
                 }
                 const bill = bills[0];
-                //console.log(bill);
+             
                 const attachments = await bill.getFile({
                     attributes: { exclude: ['size', 'md5', 'mime_type', 'BillId','aws_metadata_etag','aws_metadata_bucket','aws_metadata_key'] },
                     where: { id: fid }
                 });
 
                 if (attachments.length === 0) {
-                    throw new Error('Invalid Attachment Id');
+                    throw new Error('Invalid file Id');
                 }
                 var  getAttachment = attachments.dataValues;
                 res.status(200).send(getAttachment);
@@ -138,14 +137,14 @@ module.exports = function(app) {
                     where: { id: bid }
                 });
                 if (bills.length === 0) {
-                    throw new Error('Invalid Bill Id');
+                    throw new Error('Bill Id is not valid');
                 }
                 const bill = bills[0];
                 const attachments = await bill.getFile({
                     where: { id: fid }
                 });
                 if (attachments.length === 0) {
-                    throw new Error('Invalid Attachment Id');
+                    throw new Error('Invalid file Id');
                 }
                 await File.destroy({
                     where: {id: fid, BillId: bid}
@@ -159,10 +158,7 @@ module.exports = function(app) {
                     {attachment : {}},
                     {where: {id: bid}}
                 );
-                // await Bill.destroy({
-                //     where: {id: bid}
-                // });
-
+      
                 res.status(204).send();
             } catch (e) {
                 res.status(400).send(e.toString());
