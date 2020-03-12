@@ -1,36 +1,65 @@
----
+# Python CircleCI 2.0 configuration file
+#
+# Check https://circleci.com/docs/2.0/language-python/ for more details
+#
 version: 2
 jobs:
-  pr_check:
+  build:
+
     docker:
-      - image: circleci/node:12.14.1
+      # specify the version you desire here
+      # use `-browsers` prefix for selenium tests, e.g. `3.6.1-browsers`
+      - image: circleci/python:3.6-jessie
+      # CircleCI maintains a library of pre-built images
+     
 
     steps:
-    # check out source code to working directory
-      - checkout 
-      - run:
-          name: Code Check out
-          command: |
-            echo “Hello!”
-            
-  build_deploy:
-    docker:
-      - image: circleci/node:13.6.0
-    
-    steps:
-    # check out source code to working directory
-      - checkout 
-      - run:
-          name: Build 
-          command: |
-           cd webapp && npm install
-  
+      - checkout
 
-workflows:
-  version: 2
-  pr-check-workflow:
-    jobs:
-      - pr_check
-  build-deploy-workflow:
-    jobs:
-      - build_deploy
+
+      - run:
+          name: install dependencies
+          command: |
+            sudo apt-get update && sudo apt-get install wget zip unzip
+            python3 -m venv venv
+            . venv/bin/activate
+
+
+      - run:
+          name: install awscli
+          command: sudo pip install awscli
+
+      
+      - run: 
+          name: artifacts
+          command: |
+            echo "Your build number is ${CIRCLE_BUILD_NUM}"
+            pwd
+
+            mkdir codedeploy_artifact
+            pwd
+            ls -al
+            cp Infrastructure/aws_codedeploy_scripts/*.sh .
+            zip -r csye6225-web-app-${CIRCLE_BUILD_NUM}.zip webapp *.sh *.yml
+            ls -al
+            mv csye6225-web-app-${CIRCLE_BUILD_NUM}.zip codedeploy_artifact/
+            ls -al
+            cd codedeploy_artifact
+            pwd
+            ls -al
+            cd ..
+            pwd
+            ls -al
+
+
+      - run:
+          name: upload artifact Zip to S3
+          command: |
+            aws configure list
+            aws s3 cp codedeploy_artifact/csye6225-web-app-${CIRCLE_BUILD_NUM}.zip s3://codedeploy.singhprasha.me/deployments/csye6225-web-app-${CIRCLE_BUILD_NUM}.zip
+
+      - run:
+          name: Make CodeDeploy API call
+          command: |
+            aws deploy register-application-revision --application-name csye6225-webapp --s3-location bucket=codedeploy.singhprasha.me,bundleType=zip,key=deployments/csye6225-web-app-${CIRCLE_BUILD_NUM}.zip  --region us-east-1
+            aws deploy create-deployment --application-name csye6225-webapp --deployment-config-name CodeDeployDefault.AllAtOnce --deployment-group-name csye6225-webapp-deployment --s3-location bucket=codedeploy.singhprasha.me,bundleType=zip,key=deployments/csye6225-web-app-${CIRCLE_BUILD_NUM}.zip --region us-east-1
