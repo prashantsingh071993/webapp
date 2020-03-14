@@ -46,6 +46,18 @@ const { Bill, User, File } = require('../db');
     }
   });
 
+
+  app.get('/v2/bills', async (req, res) => {
+    try {
+      const user = await validator.validateAndGetUser(req, User);
+      const bills = await user.getBills();
+
+      res.status(200).send(bills);
+    } catch (error) {
+      res.status(400).send(error.toString());
+    }
+  });
+
   app.get('/v1/bill/:id', async (req, res) => {
     try {
       const user = await validator.validateAndGetUser(req, User);
