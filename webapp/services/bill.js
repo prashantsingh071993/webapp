@@ -2,11 +2,18 @@ const Sequelize = require('sequelize');
 const validator = require('../validator');
 const uuidv4 = require('uuidv4');
 const uploadS3 = require('../uploadS3');
+const logger = require('../config/winston');
+const SDC = require('statsd-client'), sdc = new SDC({host: 'localhost', port: 8125});
+
+
 module.exports = function(app) {
 const { Bill, User, File } = require('../db');
 
   app.post('/v1/bill', async (req, res) => {
+
     try {
+      logger.info("Bill Register Call");
+      sdc.increment('Post Bill');
       let user = await validator.validateAndGetUser(req, User);
 
       let bills = await Bill.create({
@@ -27,6 +34,7 @@ const { Bill, User, File } = require('../db');
       res.status(201).send(bills);
 
     } catch (error) {
+      logger.error(error);
       let message = null;
       if (error instanceof Sequelize.ValidationError) {
         message = error.errors[0].message;
@@ -37,11 +45,14 @@ const { Bill, User, File } = require('../db');
 
   app.get('/v1/bills', async (req, res) => {
     try {
+      logger.info("Bill GET All Call");
+      sdc.increment('Get all bill');
       const user = await validator.validateAndGetUser(req, User);
       const bills = await user.getBills();
 
       res.status(200).send(bills);
     } catch (error) {
+      logger.error(error);
       res.status(400).send(error.toString());
     }
   });
@@ -49,17 +60,24 @@ const { Bill, User, File } = require('../db');
 
   app.get('/v2/bills', async (req, res) => {
     try {
+      logger.info("Bill GET All Call");
+      sdc.increment('Get all bill');
       const user = await validator.validateAndGetUser(req, User);
       const bills = await user.getBills();
 
       res.status(200).send(bills);
     } catch (error) {
+      logger.error(error);
       res.status(400).send(error.toString());
     }
   });
 
   app.get('/v1/bill/:id', async (req, res) => {
     try {
+
+      logger.info("Bill GET by ID Call");
+      sdc.increment('Get bill by id');
+  
       const user = await validator.validateAndGetUser(req, User);
       const id = req.params.id;
       const bills = await user.getBills({
@@ -82,12 +100,15 @@ const { Bill, User, File } = require('../db');
       ba = { ...bill_update, ...file_attachment };
       res.status(200).send(ba);
     } catch (error) {
+      logger.error(error);
       res.status(400).send(error.toString());
     }
   });
 
   app.delete('/v1/bill/:id', async (req, res) => {
     try {
+      logger.info("Bill Delete Call");
+      sdc.increment('Delete bill by id')
       const user = await validator.validateAndGetUser(req, User);
       const id = req.params.id;
       const bills = await user.getBills({
@@ -116,12 +137,16 @@ const { Bill, User, File } = require('../db');
       await bill.destroy();
       res.sendStatus(204);
     } catch (error) {
+      logger.error(error);
       res.status(400).send(error.toString());
     }
   });
 
   app.put('/v1/bill/:id', async (req, res) => {
     try {
+      logger.info("Bill PUT Call");
+      sdc.increment('Update bill (PUT)')
+
       const user = await validator.validateAndGetUser(req, User);
       const id = req.params.id;
       const bills = await user.getBills({
@@ -160,6 +185,7 @@ const { Bill, User, File } = require('../db');
       await bill.save();
       res.sendStatus(204);
     } catch (error) {
+      logger.error(error);
       res.status(400).send(error.toString());
     }
   });

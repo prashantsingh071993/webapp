@@ -2,11 +2,15 @@ const Sequelize = require('sequelize');
 const validator = require('../validator');
 const uuidv4 = require('uuidv4');
 const bcrypt = require('bcrypt');
+const logger = require('../config/winston')
+const SDC = require('statsd-client'), sdc = new SDC({host: 'localhost', port: 8125});
 
 module.exports = function(app) {
   const { User } = require('../db');
   app.post('/v1/user', async (req, res) => {
     try {
+      logger.info("User Register Call");
+      sdc.increment('POST user');
       const passw = req.body.password;
       validator.checkPasswStrength(passw);
       const hash = await bcrypt.hash(req.body.password, 10);
@@ -23,6 +27,7 @@ module.exports = function(app) {
       delete users.password;
       res.status(201).send(users);
     } catch (error) {
+      logger.error(error);
       let message = null;
       if (error instanceof Sequelize.ValidationError) {
         message = error.errors[0].message;
@@ -33,17 +38,22 @@ module.exports = function(app) {
 
   app.get('/v1/user/self', async (req, res) => {
     try {
+      logger.info("User GET Call");
+      sdc.increment('GET user');
       let user = await validator.validateAndGetUser(req, User);
       user = user.toJSON();
       delete user.password;
       res.status(200).send(user);
     } catch (error) {
+      logger.error(error)
       res.status(400).send(error.toString());
     }
   });
 
   app.put('/v1/user/self', async (req, res) => {
     try {
+      logger.info("User UPDATE Call");
+      sdc.increment('UPDATE user');
       let user = await validator.validateAndGetUser(req, User);
 
       if (req.body.first_name) {
@@ -60,6 +70,7 @@ module.exports = function(app) {
       await user.save();
       res.status(204).send();
     } catch (error) {
+      logger.error(error)
       res.status(400).send(error.toString());
     }
   });

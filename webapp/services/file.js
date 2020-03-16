@@ -5,12 +5,16 @@ const fs = require('fs');
 const mime = require('mime');
 var dateformat = require("dateformat");
 const uploadS3 = require('../uploadS3');
+const logger = require('../config/winston')
+const SDC = require('statsd-client'), sdc = new SDC({host: 'localhost', port: 8125});
 
 module.exports = function(app) {
     const { Bill, User, File } = require('../db');
 
     app.post('/v1/bill/:id/file', async (req, res) => {
         try {
+            logger.info("File Register Call");
+            sdc.increment('File Post')
             const bid = req.params.id;
             let user = await validator.validateAndGetUser(req, User);
             if (
@@ -90,6 +94,7 @@ module.exports = function(app) {
             res.status(201).send(fileUpload);
 
         } catch (error) {
+            logger.error(error);
             let message = null;
             if (error instanceof Sequelize.ValidationError) {
                 message = error.errors[0].message;
@@ -100,6 +105,8 @@ module.exports = function(app) {
 
     app.get('/v1/bill/:bid/file/:fid', async (req, res) => {
             try {
+                logger.info("FIle Get by Bill ID CALL");
+                sdc.increment('Get File')
                 const bid = req.params.bid;
                 const fid = req.params.fid;
                 const user = await validator.validateAndGetUser(req, User);
@@ -123,6 +130,7 @@ module.exports = function(app) {
                 var  getAttachment = attachments.dataValues;
                 res.status(200).send(getAttachment);
             } catch (e) {
+                logger.error(e);
                 res.status(400).send(e.toString());
             }
         }
@@ -130,6 +138,8 @@ module.exports = function(app) {
 
     app.delete('/v1/bill/:bid/file/:fid', async (req, res) => {
             try {
+                logger.info("File DELETE BY ID CALL");
+                sdc.increment('Delete File')
                 const bid = req.params.bid;
                 const fid = req.params.fid;
                 const user = await validator.validateAndGetUser(req, User);
@@ -161,6 +171,7 @@ module.exports = function(app) {
       
                 res.status(204).send();
             } catch (e) {
+                logger.error(e);
                 res.status(400).send(e.toString());
             }
         }
