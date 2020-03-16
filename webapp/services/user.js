@@ -2,7 +2,7 @@ const Sequelize = require('sequelize');
 const validator = require('../validator');
 const uuidv4 = require('uuidv4');
 const bcrypt = require('bcrypt');
-const logger = require('../config/winston')
+const logger = require('../config/winston');
 const SDC = require('statsd-client'), sdc = new SDC({host: 'localhost', port: 8125});
 
 module.exports = function(app) {

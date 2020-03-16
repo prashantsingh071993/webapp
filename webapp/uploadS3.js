@@ -1,15 +1,15 @@
-const BUCKET_NAME = process.env.S3_BUCKET_ADDR;
-// const BUCKET_NAME = "codedeploy.singhprasha.me"; //local
+// const BUCKET_NAME = process.env.S3_BUCKET_ADDR;
+const BUCKET_NAME = "codedeploy.singhprasha.me"; //local
 
 var AWS = require('aws-sdk');
 
-//For local only
-//  var s3 = new AWS.S3({
-//      accessKeyId: "AKIAIJ5IZMAG2DVBOG7A",
-//      secretAccessKey: "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"
-//   });
+// For local only
+ var s3 = new AWS.S3({
+     accessKeyId: "AKIAIJ5IZMAG2DVBOG7A",
+     secretAccessKey: "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"
+  });
 
-var s3 = new AWS.S3();
+// var s3 = new AWS.S3();
 
 var fs = require('fs');
 var path = require('path');
