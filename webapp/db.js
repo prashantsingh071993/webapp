@@ -1,22 +1,22 @@
 const Sequelize = require('sequelize');
 
-// const sequelize = new Sequelize(process.env.DBName, process.env.RDS_USERNAME, process.env.RDS_PASSWORD,
-//     {
-//     host: process.env.RDS_HOSTNAME,
-//     port: process.env.RDS_PORT,
-//     dialect: 'mysql'
-//   }
-// );
-
-
-
-const sequelize = new Sequelize("csye6225", "root", "root",
-  {
-  host: "localhost",
-  port: 3306,
-  dialect: 'mysql'
-}
+const sequelize = new Sequelize(process.env.DBName, process.env.RDS_USERNAME, process.env.RDS_PASSWORD,
+    {
+    host: process.env.RDS_HOSTNAME,
+    port: process.env.RDS_PORT,
+    dialect: 'mysql'
+  }
 );
+
+
+
+// const sequelize = new Sequelize("csye6225", "root", "root",
+//   {
+//   host: "localhost",
+//   port: 3306,
+//   dialect: 'mysql'
+// }
+// );
 
 
 class User extends Sequelize.Model {}
