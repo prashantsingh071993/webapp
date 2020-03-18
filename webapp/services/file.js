@@ -12,6 +12,7 @@ module.exports = function(app) {
     const { Bill, User, File } = require('../db');
 
     app.post('/v1/bill/:id/file', async (req, res) => {
+        let start = Date.now();
         try {
             logger.info("File Register Call");
             sdc.increment('File Post')
@@ -101,9 +102,14 @@ module.exports = function(app) {
             }
             res.status(400).send(message || error.toString());
         }
+        let end = Date.now();
+        var elapsed = end - start;
+        sdc.timing('CREATE FILE response time', elapsed);
     });
 
     app.get('/v1/bill/:bid/file/:fid', async (req, res) => {
+            let start = Date.now();
+
             try {
                 logger.info("FIle Get by Bill ID CALL");
                 sdc.increment('Get File')
@@ -133,10 +139,13 @@ module.exports = function(app) {
                 logger.error(e);
                 res.status(400).send(e.toString());
             }
-        }
-    );
+            let end = Date.now();
+            var elapsed = end - start;
+            sdc.timing('GET FILE BY ID response time', elapsed);
+        });
 
     app.delete('/v1/bill/:bid/file/:fid', async (req, res) => {
+            let start = Date.now();
             try {
                 logger.info("File DELETE BY ID CALL");
                 sdc.increment('Delete File')
@@ -174,6 +183,10 @@ module.exports = function(app) {
                 logger.error(e);
                 res.status(400).send(e.toString());
             }
+
+            let end = Date.now();
+            var elapsed = end - start;
+            sdc.timing('DELETE FILE BY ID response time', elapsed);
         }
     );
 };

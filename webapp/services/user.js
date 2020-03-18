@@ -8,7 +8,10 @@ const SDC = require('statsd-client'), sdc = new SDC({host: 'localhost', port: 81
 module.exports = function(app) {
   const { User } = require('../db');
   app.post('/v1/user', async (req, res) => {
+    let start = Date.now();
     try {
+      
+
       logger.info("User Register Call");
       sdc.increment('POST user');
       const passw = req.body.password;
@@ -34,9 +37,14 @@ module.exports = function(app) {
       }
       res.status(400).send(message || error.toString());
     }
+
+    let end = Date.now();
+    var elapsed = end - start;
+    sdc.timing('Create User response time', elapsed);
   });
 
   app.get('/v1/user/self', async (req, res) => {
+    let start = Date.now();
     try {
       logger.info("User GET Call");
       sdc.increment('GET user');
@@ -48,6 +56,9 @@ module.exports = function(app) {
       logger.error(error)
       res.status(400).send(error.toString());
     }
+    let end = Date.now();
+    var elapsed = end - start;
+    sdc.timing('GET V1 USER response time', elapsed);
   });
 
   app.put('/v1/user/self', async (req, res) => {
