@@ -7,7 +7,7 @@ repo descrp: Cloud 6225 Network Structures
 * Database: MySQL
 
 
-## Deploy Instructions
+## Deploy Instruction
 * Run "npm start" command on terminal
 * Test api endpoint using postman or other.
 
