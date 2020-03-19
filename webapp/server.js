@@ -2,6 +2,7 @@ const express = require('express');
 const app = express();
 const bodyParser = require('body-parser');
 const db = require('./db');
+const logger = require('./config/winston');
 
 const userService = require('./services/user');
 const billService = require('./services/bill');

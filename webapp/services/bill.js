@@ -10,6 +10,7 @@ module.exports = function(app) {
 const { Bill, User, File } = require('../db');
 
   app.post('/v1/bill', async (req, res) => {
+    let start = Date.now();
 
     try {
       logger.info("Bill Register Call");
@@ -41,9 +42,13 @@ const { Bill, User, File } = require('../db');
       }
       res.status(400).send(message || error.toString());
     }
+    let end = Date.now();
+    var elapsed = end - start;
+    sdc.timing('Create Bill response time', elapsed);
   });
 
   app.get('/v1/bills', async (req, res) => {
+    let start = Date.now();
     try {
       logger.info("Bill GET All Call");
       sdc.increment('Get all bill');
@@ -55,10 +60,15 @@ const { Bill, User, File } = require('../db');
       logger.error(error);
       res.status(400).send(error.toString());
     }
+
+    let end = Date.now();
+    var elapsed = end - start;
+    sdc.timing('GET V1 BILL response time', elapsed);
   });
 
 
   app.get('/v2/bills', async (req, res) => {
+    let start = Date.now();
     try {
       logger.info("Bill GET All Call");
       sdc.increment('Get all bill');
@@ -70,9 +80,13 @@ const { Bill, User, File } = require('../db');
       logger.error(error);
       res.status(400).send(error.toString());
     }
+    let end = Date.now();
+    var elapsed = end - start;
+    sdc.timing('GET V2 BILL response time', elapsed);
   });
 
   app.get('/v1/bill/:id', async (req, res) => {
+    let start = Date.now();
     try {
 
       logger.info("Bill GET by ID Call");
@@ -103,9 +117,13 @@ const { Bill, User, File } = require('../db');
       logger.error(error);
       res.status(400).send(error.toString());
     }
+    let end = Date.now();
+    var elapsed = end - start;
+    sdc.timing('GET V1 BILL WITH ID response time', elapsed);
   });
 
   app.delete('/v1/bill/:id', async (req, res) => {
+    let start = Date.now();
     try {
       logger.info("Bill Delete Call");
       sdc.increment('Delete bill by id')
@@ -140,6 +158,9 @@ const { Bill, User, File } = require('../db');
       logger.error(error);
       res.status(400).send(error.toString());
     }
+    let end = Date.now();
+    var elapsed = end - start;
+    sdc.timing('DELETE BILL WITH ID response time', elapsed);
   });
 
   app.put('/v1/bill/:id', async (req, res) => {

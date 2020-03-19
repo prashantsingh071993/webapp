@@ -1,9 +1,12 @@
+const logger = require('../config/winston');
+const SDC = require('statsd-client'), sdc = new SDC({host: 'localhost', port: 8125});
+
 const BUCKET_NAME = process.env.S3_BUCKET_ADDR;
-// const BUCKET_NAME = "codedeploy.singhprasha.me"; //local
+//const BUCKET_NAME = "codedeploy.singhprasha.me"; //local
 
 var AWS = require('aws-sdk');
 
-//For local only
+// For local only
 //  var s3 = new AWS.S3({
 //      accessKeyId: "AKIAIJ5IZMAG2DVBOG7A",
 //      secretAccessKey: "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"
@@ -42,6 +45,7 @@ var path = require('path');
 };
 
 async function deleteFromS3(filename) {
+    logger.info(filename);
     console.log("filename ", filename);
 
     const params = {

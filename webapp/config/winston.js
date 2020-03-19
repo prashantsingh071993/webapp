@@ -1,7 +1,6 @@
 var appRoot = require('app-root-path');
 var winston = require('winston');
 
-// define the custom settings for each transport (file, console)
 var options = {
     file: {
         level: 'info',
@@ -41,7 +40,6 @@ var logger = new winston.createLogger({
 // create a stream object with a 'write' function that will be used by `morgan`
 logger.stream = {
     write: function(message, encoding) {
-        // use the 'info' log level so the output will be picked up by both transports (file and console)
         logger.info(message);
     },
 };
