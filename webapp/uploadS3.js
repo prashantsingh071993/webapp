@@ -18,11 +18,13 @@ var fs = require('fs');
 var path = require('path');
 
  function uploadToS3(keyPrefix, filePath) {
+
     var fileName = path.basename(filePath);
     var fileStream = fs.createReadStream(filePath);
     var keyName = path.join(keyPrefix, fileName);
 
     return new Promise(function(resolve, reject) {
+        let start = Date.now(); 
         fileStream.once('error', reject);
         s3.upload(
             {
@@ -41,10 +43,16 @@ var path = require('path');
                 return result;
             }
         );
+        let end = Date.now();
+        var elapsed = end - start;
+        sdc.timing('Upload TO S3 response time', elapsed);
     });
+
+
 };
 
 async function deleteFromS3(filename) {
+    let start = Date.now();
     logger.info(filename);
     console.log("filename ", filename);
 
@@ -65,6 +73,10 @@ async function deleteFromS3(filename) {
     } catch (err) {
         console.log("File not Found : " + err.code);
     }
+    let end = Date.now();
+    var elapsed = end - start;
+    sdc.timing('DELETE FROM S3 response time', elapsed);
+
 };
 
 module.exports = { upload: uploadToS3, delete: deleteFromS3};
