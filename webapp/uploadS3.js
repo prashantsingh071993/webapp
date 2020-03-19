@@ -1,4 +1,4 @@
-const logger = require('../config/winston');
+const logger = require('../webapp/config/winston');
 const SDC = require('statsd-client'), sdc = new SDC({host: 'localhost', port: 8125});
 
 const BUCKET_NAME = process.env.S3_BUCKET_ADDR;
