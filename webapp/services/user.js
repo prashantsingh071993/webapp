@@ -85,4 +85,15 @@ module.exports = function(app) {
       res.status(400).send(error.toString());
     }
   });
+
+  app.get('/check', async (req, res) => {
+    res.status(200).json({
+      "message": "Check Successful"
+    });
+  });
+
+  
+
+
+
 };
