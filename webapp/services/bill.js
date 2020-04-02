@@ -3,6 +3,49 @@ const validator = require('../validator');
 const uuidv4 = require('uuidv4');
 const uploadS3 = require('../uploadS3');
 const logger = require('../config/winston');
+const AWS = require("aws-sdk");
+const BUCKET_NAME = process.env.S3_BUCKET_ADDR;
+
+/////SQS////
+var sqs = new AWS.SQS();
+var create_queue_params = {
+  QueueName: "MyQueue",
+  Attributes: {
+    ReceiveMessageWaitTimeSeconds: "2"
+  }
+};
+var queue_url = "";
+sqs.createQueue(create_queue_params, function(err, data) {
+  if (err) {
+    console.error(err);
+  } else {
+    console.log(data);
+    queue_url = data.QueueUrl;
+  }
+});
+
+/// SNS//
+var topic_arn = "";
+var createTopicPromise = new AWS.SNS({ apiVersion: "2010-03-31" })
+  .createTopic({ Name: "EmailTopic" })
+  .promise();
+
+
+  //handled rejects//
+
+createTopicPromise
+ .then(function(data) {
+    console.log("Topic ARN is " + data.TopicArn);
+    topic_arn = data.TopicArn;
+  })
+  .catch(function(err) {
+    console.error(err, err.stack);
+  });
+
+
+
+
+
 const SDC = require('statsd-client'), sdc = new SDC({host: 'localhost', port: 8125});
 
 
@@ -210,4 +253,134 @@ const { Bill, User, File } = require('../db');
       res.status(400).send(error.toString());
     }
   });
+
+// get bills by email
+app.get('/v1/bills/due/:x', async (req, res) => {
+  let x = req.params.x;
+ try {
+   //validating the user
+   const user = await validator.validateAndGetUser(req, User);
+   //nn
+   function formatDate(date) {
+     var d = new Date(date),
+         month = "" + (d.getMonth() + 1),
+         day = "" + d.getDate(),
+         year = d.getFullYear();
+
+     if (month.length < 2) month = "0" + month;
+     if (day.length < 2) day = "0" + day;
+
+     return [year, month, day].join("-");
+   }
+
+   var d = new Date();
+   console.log("Current Date :" + d);
+   var new_date = new Date().setDate(
+       new Date().getDate() + Number(req.params.x)
+   );
+   var formatted_date = formatDate(new_date);
+   console.log("Bills Before Date: ", formatted_date);
+
+   const b = await user.getBills();
+   //const bill1 = null ;
+   if(b.due_date < formatted_date) {
+     b = await user.getBills();
+   }
+
+   Response_Msg = [];
+
+   for(const elements in b) {
+     const message = {
+       url:
+           "http://prod.singhprasha.me/v1/bill/" +
+           b[elements].id
+     };
+     Response_Msg.push(message);
+   }
+
+   const Response = {
+     Response_Msg: Response_Msg,
+     Response_email: user.email_address,
+     Response_due_date: formatted_date
+   };
+
+   var send_queue_params = {
+     MessageBody: JSON.stringify(Response),
+     QueueUrl: queue_url,
+     DelaySeconds: 0
+   };
+
+   sqs.sendMessage(send_queue_params, function(error3, data) {
+     if (error3) {
+       console.error(error3);
+     } else {
+       console.log(
+           "Sent Message From Queue" + JSON.stringify(data)
+       );
+     }
+   });
+
+   console.log("Response: " + JSON.stringify(Response));
+   res.status(200).send("Check Your Emails for Due Bills");
+
+   var receive_queue_params = {
+     QueueUrl: queue_url,
+     VisibilityTimeout: 0 // 0 min wait time for anyone else to process.
+   };
+   sqs.receiveMessage(receive_queue_params, function(
+       error4,
+       data2
+   ) {
+     if (error4) {
+       console.error(error4);
+     } else {
+       console.log(
+           "Recived Message From Queue" + JSON.stringify(data2)
+       );
+
+       var params = {
+         Message: JSON.stringify(data2) /* required */,
+         TopicArn: topic_arn
+       };
+
+       // Create promise and SNS service object
+       var publishTextPromise = new AWS.SNS({
+         apiVersion: "2010-03-31"
+       })
+           .publish(params)
+           .promise();
+
+       // Handle promise's fulfilled/rejected states
+       publishTextPromise
+           .then(function(data) {
+             console.log(
+                 `Message ${params.Message}  sent to the topic ${params.TopicArn}`
+             );
+             console.log("MessageID is " + JSON.stringify(data));
+           })
+           .catch(function(err) {
+             console.error(err, err.stack);
+           });
+     }
+   });
+
+  } catch (e) {
+    res.status(400).send(e.toString());
+    logg.error({ error: e.toString() });
+   }
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 };
