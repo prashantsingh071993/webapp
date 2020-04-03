@@ -282,8 +282,8 @@ app.get('/v1/bill/due/:x', async (req, res) => {
    const bills = await user.getBills();
 
    logger.info(bills)
-   bill = JSON.parse(JSON.stringify(bills));
-   logger.info(bill);
+   bill = bills;
+   logger.info("testhbszch ajhscvbhszcjkbzcjhzcjzdjczjxcnj"+bill);
 
 
    Response_Message = [];
