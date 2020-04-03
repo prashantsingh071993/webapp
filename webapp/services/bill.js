@@ -288,7 +288,7 @@ app.get('/v1/bill/due/:x', async (req, res) => {
       Response_Message = [];
         for (const i in bill) {
           console.log(bill[i].due_date);
-          if(bill[i].due_date < modified_date) {
+          if(bill[i].due_date < formatted_date) {
             const message = {url: "http://prod.singhprasha.me/v1/bill/" + bill[i].id};
             Response_Message.push(message);
           }
