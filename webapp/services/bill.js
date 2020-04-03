@@ -259,7 +259,6 @@ app.get('/v1/bill/due/:x', async (req, res) => {
  try {
    //validating the user
    const user = await validator.validateAndGetUser(req, User);
-   //nn
    function formatDate(date) {
      var d = new Date(date),
          month = "" + (d.getMonth() + 1),
@@ -272,29 +271,25 @@ app.get('/v1/bill/due/:x', async (req, res) => {
      return [year, month, day].join("-");
    }
 
-   var d = new Date();
-   console.log("Current Date :" + d);
-   var new_date = new Date().setDate(
-       new Date().getDate() + Number(req.params.x)
-   );
-   var formatted_date = formatDate(new_date);
-   console.log("Bills Before Date: ", formatted_date);
-
+   var current_date = dateformat(new Date(), "yyyy-mm-dd");
+   console.log("Current Date :" + current_date);
+   var new_date = new Date().setDate(new Date().getDate() + Number(x));
+   var modified_date = formatDate(new_date);
+   console.log("End Date: ", modified_date);
    const bills = await user.getBills();
-      bill = JSON.parse(JSON.stringify(bills));
-      console.log(bill);
+   bill = JSON.parse(JSON.stringify(bills));
+   console.log(bill);
 
 
-      Response_Message = [];
-        for (const i in bill) {
-          console.log(bill[i].due_date);
-          if(bill[i].due_date < formatted_date) {
-            const message = {url: "http://prod.singhprasha.me/v1/bill/" + bill[i].id};
-            Response_Message.push(message);
-          }
+   Response_Message = [];
+     for (const i in bill) {
+       console.log(bill[i].due_date);
+       if(bill[i].due_date < modified_date) {
+         const message = {url: "http://prod.singhprasha.me/v1/bill/" + bill[i].id};
+         Response_Message.push(message);
+       }
 
-        }
-
+     }
 
 
    const Response = {
