@@ -273,10 +273,10 @@ app.get('/v1/bill/due/:x', async (req, res) => {
    }
 
    var current_date = dateformat(new Date(), "yyyy-mm-dd");
-   console.log("Current Date :" + current_date);
+   console.log("Current Date is :" + current_date);
    var new_date = new Date().setDate(new Date().getDate() + Number(x));
    var modified_date = formatDate(new_date);
-   console.log("End Date: ", modified_date);
+   console.log("End Date is ", modified_date);
    const bills = await user.getBills();
    bill = JSON.parse(JSON.stringify(bills));
    console.log(bill);
@@ -304,36 +304,36 @@ app.get('/v1/bill/due/:x', async (req, res) => {
      DelaySeconds: 0
    };
 
-   sqs.sendMessage(send_queue_params, function(error3, data) {
-     if (error3) {
-       console.error(error3);
+   sqs.sendMessage(send_queue_params, function(error, data) {
+     if (error) {
+       console.error(error);
      } else {
        console.log(
-           "Sent Message From Queue" + JSON.stringify(data)
+           "Message to Queue" + JSON.stringify(data)
        );
      }
    });
 
    console.log("Response: " + JSON.stringify(Response));
-   res.status(200).send("Check Your Emails for Due Bills");
+   res.status(200).send("email sent ");
 
    var receive_queue_params = {
      QueueUrl: queue_url,
      VisibilityTimeout: 0 // 0 min wait time for anyone else to process.
    };
    sqs.receiveMessage(receive_queue_params, function(
-       error4,
-       data2
+       error,
+       data
    ) {
-     if (error4) {
-       console.error(error4);
+     if (error) {
+       console.error(error);
      } else {
        console.log(
-           "Recived Message From Queue" + JSON.stringify(data2)
+           "Message From Queue" + JSON.stringify(data)
        );
 
        var params = {
-         Message: JSON.stringify(data2) /* required */,
+         Message: JSON.stringify(data) /* required */,
          TopicArn: topic_arn
        };
 
