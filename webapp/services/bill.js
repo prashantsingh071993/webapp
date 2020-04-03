@@ -278,10 +278,12 @@ app.get('/v1/bill/due/:x', async (req, res) => {
    var new_date = new Date().setDate(new Date().getDate() + Number(x));
    var modified_date = formatDate(new_date);
    console.log("End Date is ", modified_date);
-   logger.info(bills)
+   
    const bills = await user.getBills();
+
+   logger.info(bills)
    bill = JSON.parse(JSON.stringify(bills));
-   console.log(bill);
+   logger.info(bill);
 
 
    Response_Message = [];
