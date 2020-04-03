@@ -315,7 +315,7 @@ app.get('/v1/bill/due/:x', async (req, res) => {
      }
    });
 
-   console.log("Response: " + JSON.stringify(Response));
+   logger.info("Response: " + JSON.stringify(Response));
    res.status(200).send("email sent ");
 
    var receive_queue_params = {
@@ -327,9 +327,9 @@ app.get('/v1/bill/due/:x', async (req, res) => {
        data
    ) {
      if (error) {
-       console.error(error);
+       logger.error(error);
      } else {
-       console.log(
+       logger.info(
            "Message From Queue" + JSON.stringify(data)
        );
 
@@ -348,13 +348,13 @@ app.get('/v1/bill/due/:x', async (req, res) => {
        // Handle promise's fulfilled/rejected states
        publishTextPromise
            .then(function(data) {
-             console.log(
+             logger.info(
                  `Message ${params.Message}  sent to the topic ${params.TopicArn}`
              );
-             console.log("MessageID is " + JSON.stringify(data));
+             logger.info("MessageID is " + JSON.stringify(data));
            })
            .catch(function(err) {
-             console.error(err, err.stack);
+             logger.error(err, err.stack);
            });
      }
    });
