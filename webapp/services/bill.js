@@ -6,27 +6,30 @@ const logger = require('../config/winston');
 const AWS = require("aws-sdk");
 const BUCKET_NAME = process.env.S3_BUCKET_ADDR;
 var dateformat = require("dateformat");
+AWS.config.update({region: 'us-east-1'});
 
 /////SQS////
 var sqs = new AWS.SQS();
-var create_queue_params = {
-  QueueName: "MyQueue",
-  Attributes: {
-    ReceiveMessageWaitTimeSeconds: "2"
-  }
-};
-var queue_url = "";
-sqs.createQueue(create_queue_params, function(err, data) {
-  if (err) {
-    console.error(err);
-  } else {
-    console.log(data);
-    queue_url = data.QueueUrl;
-  }
-});
+// var create_queue_params = {
+//   QueueName: "MyQueue",
+//   Attributes: {
+//     ReceiveMessageWaitTimeSeconds: "2"
+//   }
+// };
+// var queue_url = "https://sqs.us-east-1.amazonaws.com/806505171853/MyQueue";
+var queue_url = process.env.SQS_URL;
+// sqs.createQueue(create_queue_params, function(err, data) {
+//   if (err) {
+//     console.error(err);
+//   } else {
+//     console.log(data);
+//     queue_url = data.QueueUrl;
+//   }
+// });
 
 /// SNS//
-var topic_arn = "";
+// var topic_arn = "arn:aws:sns:us-east-1:806505171853:EmailTopic";
+var topic_arn = process.env.SNS_TOPIC;
 var createTopicPromise = new AWS.SNS({ apiVersion: "2010-03-31" })
   .createTopic({ Name: "EmailTopic" })
   .promise();
@@ -35,11 +38,11 @@ var createTopicPromise = new AWS.SNS({ apiVersion: "2010-03-31" })
 
 createTopicPromise
  .then(function(data) {
-    console.log("Topic ARN is " + data.TopicArn);
+    logger.info("Topic ARN is " + data.TopicArn);
     topic_arn = data.TopicArn;
   })
   .catch(function(err) {
-    console.error(err, err.stack);
+    logger.error(err, err.stack);
   });
 
 
@@ -277,9 +280,12 @@ app.get('/v1/bill/due/:x', async (req, res) => {
    var new_date = new Date().setDate(new Date().getDate() + Number(x));
    var modified_date = formatDate(new_date);
    console.log("End Date is ", modified_date);
+   
    const bills = await user.getBills();
-   bill = JSON.parse(JSON.stringify(bills));
-   console.log(bill);
+
+   logger.info(bills)
+   bill = bills;
+   logger.info("testhbszch ajhscvbhszcjkbzcjhzcjzdjczjxcnj"+bill);
 
 
    Response_Message = [];
@@ -298,23 +304,25 @@ app.get('/v1/bill/due/:x', async (req, res) => {
      Response_email: user.email_address,
    };
 
+   logger.info("Response Test : " + Response);
+
    var send_queue_params = {
-     MessageBody: JSON.stringify(Response),
+     MessageBody: Response,
      QueueUrl: queue_url,
      DelaySeconds: 0
    };
 
    sqs.sendMessage(send_queue_params, function(error, data) {
      if (error) {
-       console.error(error);
+       logger.error(error);
      } else {
-       console.log(
+       logger.info(
            "Message to Queue" + JSON.stringify(data)
        );
      }
    });
 
-   console.log("Response: " + JSON.stringify(Response));
+   
    res.status(200).send("email sent ");
 
    var receive_queue_params = {
@@ -326,9 +334,9 @@ app.get('/v1/bill/due/:x', async (req, res) => {
        data
    ) {
      if (error) {
-       console.error(error);
+       logger.error(error);
      } else {
-       console.log(
+       logger.info(
            "Message From Queue" + JSON.stringify(data)
        );
 
@@ -347,20 +355,20 @@ app.get('/v1/bill/due/:x', async (req, res) => {
        // Handle promise's fulfilled/rejected states
        publishTextPromise
            .then(function(data) {
-             console.log(
+             logger.info(
                  `Message ${params.Message}  sent to the topic ${params.TopicArn}`
              );
-             console.log("MessageID is " + JSON.stringify(data));
+             logger.info("MessageID is " + JSON.stringify(data));
            })
            .catch(function(err) {
-             console.error(err, err.stack);
+             logger.error(err, err.stack);
            });
      }
    });
 
   } catch (e) {
     res.status(400).send(e.toString());
-    logg.error({ error: e.toString() });
+    logger.error({ error: e.toString() });
    }
 });
 
