@@ -30,8 +30,7 @@ var createTopicPromise = new AWS.SNS({ apiVersion: "2010-03-31" })
   .createTopic({ Name: "EmailTopic" })
   .promise();
 
-
-  //handled rejects//
+//handled rejects//
 
 createTopicPromise
  .then(function(data) {
@@ -297,11 +296,10 @@ app.get('/v1/bill/due/:x', async (req, res) => {
         }
 
 
-        
+
    const Response = {
-     Response_Msg: Response_Msg,
+     Response_Msg: Response_Message,
      Response_email: user.email_address,
-     Response_due_date: formatted_date
    };
 
    var send_queue_params = {
