@@ -306,9 +306,9 @@ app.get('/v1/bill/due/:x', async (req, res) => {
 
    sqs.sendMessage(send_queue_params, function(error, data) {
      if (error) {
-       console.error(error);
+       logger.error(error);
      } else {
-       console.log(
+       logger.info(
            "Message to Queue" + JSON.stringify(data)
        );
      }
