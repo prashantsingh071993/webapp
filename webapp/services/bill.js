@@ -302,8 +302,10 @@ app.get('/v1/bill/due/:x', async (req, res) => {
      Response_email: user.email_address,
    };
 
+   logger.info("Response Test : " + Response);
+
    var send_queue_params = {
-     MessageBody: JSON.stringify(Response),
+     MessageBody: Response,
      QueueUrl: queue_url,
      DelaySeconds: 0
    };
@@ -318,7 +320,7 @@ app.get('/v1/bill/due/:x', async (req, res) => {
      }
    });
 
-   logger.info("Response: " + JSON.stringify(Response));
+   
    res.status(200).send("email sent ");
 
    var receive_queue_params = {
