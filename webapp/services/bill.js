@@ -36,11 +36,11 @@ var createTopicPromise = new AWS.SNS({ apiVersion: "2010-03-31" })
 
 createTopicPromise
  .then(function(data) {
-    console.log("Topic ARN is " + data.TopicArn);
+    logger.info("Topic ARN is " + data.TopicArn);
     topic_arn = data.TopicArn;
   })
   .catch(function(err) {
-    console.error(err, err.stack);
+    logger.error(err, err.stack);
   });
 
 
