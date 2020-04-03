@@ -27,7 +27,7 @@ var queue_url = "https://sqs.us-east-1.amazonaws.com/806505171853/MyQueue";
 // });
 
 /// SNS//
-var topic_arn = "";
+var topic_arn = "arn:aws:sns:us-east-1:806505171853:EmailTopic";
 var createTopicPromise = new AWS.SNS({ apiVersion: "2010-03-31" })
   .createTopic({ Name: "EmailTopic" })
   .promise();
