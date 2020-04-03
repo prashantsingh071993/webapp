@@ -16,7 +16,8 @@ var sqs = new AWS.SQS();
 //     ReceiveMessageWaitTimeSeconds: "2"
 //   }
 // };
-var queue_url = "https://sqs.us-east-1.amazonaws.com/806505171853/MyQueue";
+// var queue_url = "https://sqs.us-east-1.amazonaws.com/806505171853/MyQueue";
+var queue_url = process.env.SQS_URL;
 // sqs.createQueue(create_queue_params, function(err, data) {
 //   if (err) {
 //     console.error(err);
@@ -27,7 +28,8 @@ var queue_url = "https://sqs.us-east-1.amazonaws.com/806505171853/MyQueue";
 // });
 
 /// SNS//
-var topic_arn = "arn:aws:sns:us-east-1:806505171853:EmailTopic";
+// var topic_arn = "arn:aws:sns:us-east-1:806505171853:EmailTopic";
+  var topic_arn = process.env.SNS_TOPIC;
 var createTopicPromise = new AWS.SNS({ apiVersion: "2010-03-31" })
   .createTopic({ Name: "EmailTopic" })
   .promise();
