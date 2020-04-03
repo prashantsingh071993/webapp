@@ -6,6 +6,7 @@ const logger = require('../config/winston');
 const AWS = require("aws-sdk");
 const BUCKET_NAME = process.env.S3_BUCKET_ADDR;
 var dateformat = require("dateformat");
+aws.config.update({region: 'us-east-1'});
 
 /////SQS////
 var sqs = new AWS.SQS();
