@@ -29,7 +29,7 @@ var queue_url = process.env.SQS_URL;
 
 /// SNS//
 // var topic_arn = "arn:aws:sns:us-east-1:806505171853:EmailTopic";
-  var topic_arn = process.env.SNS_TOPIC;
+var topic_arn = process.env.SNS_TOPIC;
 var createTopicPromise = new AWS.SNS({ apiVersion: "2010-03-31" })
   .createTopic({ Name: "EmailTopic" })
   .promise();
