@@ -361,7 +361,7 @@ app.get('/v1/bill/due/:x', async (req, res) => {
 
   } catch (e) {
     res.status(400).send(e.toString());
-    logg.error({ error: e.toString() });
+    logger.error({ error: e.toString() });
    }
 });
 
