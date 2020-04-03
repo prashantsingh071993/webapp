@@ -15,7 +15,7 @@ var sqs = new AWS.SQS();
 //     ReceiveMessageWaitTimeSeconds: "2"
 //   }
 // };
-// var queue_url = "";
+var queue_url = "https://sqs.us-east-1.amazonaws.com/806505171853/MyQueue";
 // sqs.createQueue(create_queue_params, function(err, data) {
 //   if (err) {
 //     console.error(err);
