@@ -255,7 +255,7 @@ const { Bill, User, File } = require('../db');
   });
 
 // get bills by email
-app.get('/v1/bills/due/:x', async (req, res) => {
+app.get('/v1/bill/due/:x', async (req, res) => {
   let x = req.params.x;
  try {
    //validating the user
@@ -281,23 +281,23 @@ app.get('/v1/bills/due/:x', async (req, res) => {
    var formatted_date = formatDate(new_date);
    console.log("Bills Before Date: ", formatted_date);
 
-   const b = await user.getBills();
-   //const bill1 = null ;
-   if(b.due_date < formatted_date) {
-     b = await user.getBills();
-   }
+   const bills = await user.getBills();
+      bill = JSON.parse(JSON.stringify(bills));
+      console.log(bill);
 
-   Response_Msg = [];
 
-   for(const elements in b) {
-     const message = {
-       url:
-           "http://prod.singhprasha.me/v1/bill/" +
-           b[elements].id
-     };
-     Response_Msg.push(message);
-   }
+      Response_Message = [];
+        for (const i in bill) {
+          console.log(bill[i].due_date);
+          if(bill[i].due_date < modified_date) {
+            const message = {url: "http://prod.singhprasha.me/v1/bill/" + bill[i].id};
+            Response_Message.push(message);
+          }
 
+        }
+
+
+        
    const Response = {
      Response_Msg: Response_Msg,
      Response_email: user.email_address,
