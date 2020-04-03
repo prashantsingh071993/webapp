@@ -5,6 +5,7 @@ const uploadS3 = require('../uploadS3');
 const logger = require('../config/winston');
 const AWS = require("aws-sdk");
 const BUCKET_NAME = process.env.S3_BUCKET_ADDR;
+var dateformat = require("dateformat");
 
 /////SQS////
 var sqs = new AWS.SQS();
@@ -63,8 +64,8 @@ const { Bill, User, File } = require('../db');
 
         id: uuidv4.uuid(),
         vendor: req.body.vendor,
-        bill_date: req.body.bill_date,
-        due_date: req.body.due_date,
+        bill_date: dateformat(req.body.bill_date, "yyyy-mm-dd"),
+        due_date: dateformat(req.body.due_date, "yyyy-mm-dd"),
         amount_due: req.body.amount_due,
         paymentStatus: req.body.paymentStatus,
         categories: req.body.categories,

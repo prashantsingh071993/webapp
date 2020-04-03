@@ -68,7 +68,7 @@ Bill.init(
       allowNull: false
     },
     bill_date: {
-      type: Sequelize.DATE,
+      type: Sequelize.STRING,
       allowNull: false
     },
       categories: {
@@ -76,7 +76,7 @@ Bill.init(
       },
 
      due_date: {
-      type: Sequelize.DATE,
+      type: Sequelize.STRING,
       allowNull: false
     },
       paymentStatus: {
