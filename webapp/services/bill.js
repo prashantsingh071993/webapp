@@ -9,21 +9,21 @@ var dateformat = require("dateformat");
 
 /////SQS////
 var sqs = new AWS.SQS();
-var create_queue_params = {
-  QueueName: "MyQueue",
-  Attributes: {
-    ReceiveMessageWaitTimeSeconds: "2"
-  }
-};
-var queue_url = "";
-sqs.createQueue(create_queue_params, function(err, data) {
-  if (err) {
-    console.error(err);
-  } else {
-    console.log(data);
-    queue_url = data.QueueUrl;
-  }
-});
+// var create_queue_params = {
+//   QueueName: "MyQueue",
+//   Attributes: {
+//     ReceiveMessageWaitTimeSeconds: "2"
+//   }
+// };
+// var queue_url = "";
+// sqs.createQueue(create_queue_params, function(err, data) {
+//   if (err) {
+//     console.error(err);
+//   } else {
+//     console.log(data);
+//     queue_url = data.QueueUrl;
+//   }
+// });
 
 /// SNS//
 var topic_arn = "";
