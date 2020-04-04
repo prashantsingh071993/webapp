@@ -311,7 +311,7 @@ app.get('/v1/bill/due/:x', async (req, res) => {
    logger.info("Response Test : " + Response);
 
    var send_queue_params = {
-     MessageBody: Response,
+     MessageBody: JSON.stringify(Response),
      QueueUrl: queue_url,
      DelaySeconds: 0
    };
