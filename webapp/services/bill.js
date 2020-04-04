@@ -18,6 +18,8 @@ var sqs = new AWS.SQS();
 // };
 // var queue_url = "https://sqs.us-east-1.amazonaws.com/806505171853/MyQueue";
 var queue_url = process.env.SQS_URL;
+
+logger.info(queue_url);
 // sqs.createQueue(create_queue_params, function(err, data) {
 //   if (err) {
 //     console.error(err);
@@ -30,6 +32,8 @@ var queue_url = process.env.SQS_URL;
 /// SNS//
 // var topic_arn = "arn:aws:sns:us-east-1:806505171853:EmailTopic";
 var topic_arn = process.env.SNS_TOPIC;
+
+logger.info(topic_arn);
 var createTopicPromise = new AWS.SNS({ apiVersion: "2010-03-31" })
   .createTopic({ Name: "EmailTopic" })
   .promise();
@@ -307,7 +311,7 @@ app.get('/v1/bill/due/:x', async (req, res) => {
    logger.info("Response Test : " + Response);
 
    var send_queue_params = {
-     MessageBody: Response,
+     MessageBody: JSON.stringify(Response),
      QueueUrl: queue_url,
      DelaySeconds: 0
    };
