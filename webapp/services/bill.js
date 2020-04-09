@@ -296,7 +296,7 @@ app.get('/v1/bill/due/:x', async (req, res) => {
      for (const i in bill) {
        console.log(bill[i].due_date);
        if(bill[i].due_date < modified_date) {
-         const message = {url: "http://prod.singhprasha.me/v1/bill/" + bill[i].id};
+         const message = {url: "https://prod.singhprasha.me/v1/bill/" + bill[i].id};
          Response_Message.push(message);
        }
 
